@@ -6,9 +6,9 @@ import en from "javascript-time-ago/locale/en";
 
 class App extends Component {
   state = {
-    teperature: [{
-      time: 1561934130042,
-      value: 26.6
+    temperature: [{
+      time: 0,
+      value: 0
     }]
   };
 
@@ -22,14 +22,20 @@ class App extends Component {
     return (
       <React.Fragment>
         <div className="centered">
-          Temp: <b>{this.state.teperature[0].value}</b> {"\xB0"}C
+          Temp: <b>{this.state.temperature[0].value}</b> {"\xB0"}C
         </div>
 
         <div className="centered">
-          <small>{this.timeAgo.format(this.state.teperature[0].time)}</small>
+          <small>{this.timeAgo.format(this.state.temperature[0].time)}</small>
         </div>
       </React.Fragment>
     );
+  }
+
+  componentDidMount() {
+    fetch('https://home-monitor-server.firebaseapp.com/temperature')
+      .then(response => response.json())
+      .then(temperature => this.setState({ temperature }));
   }
 }
 
