@@ -1,8 +1,9 @@
-import React, { Component } from "react"; //TODO: how this import works?
+import React, { Component } from "react"; //TODO: how does this import works?
 
 import "./App.css";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import * as constants from "./constants";
 
 class App extends Component {
   state = {
@@ -32,10 +33,11 @@ class App extends Component {
     );
   }
 
-  componentDidMount() {
-    fetch('https://home-monitor-server.firebaseapp.com/temperature')
-      .then(response => response.json())
-      .then(temperature => this.setState({ temperature }));
+  async componentDidMount() {
+    let response = await fetch(`${constants.BASE_URL}/temperature`);
+    let temperature = await response.json();
+
+    this.setState({ temperature });
   }
 }
 
