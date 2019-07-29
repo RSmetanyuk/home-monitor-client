@@ -1,4 +1,5 @@
-import React, { Component } from "react"; //TODO: how does this import works?
+import React, { Component } from "react";
+import socketIOClient from "socket.io-client";
 
 import "./App.css";
 import TimeAgo from "javascript-time-ago";
@@ -7,37 +8,41 @@ import * as constants from "./constants";
 
 class App extends Component {
   state = {
-    temperature: [{
-      time: 0,
-      value: 0
-    }]
+    temperature: {
+      time: null,
+      value: null
+    }
   };
 
   constructor() {
     super();
     TimeAgo.addLocale(en);
     this.timeAgo = new TimeAgo("en-US");
+
+    const socket = socketIOClient(constants.BASE_URL);
+    socket.on('temperature change', (temperature) => this.setState({ temperature }));
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <div className="centered">
-          Temp: <b>{this.state.temperature[0].value}</b> {"\xB0"}C
+    if (this.state.temperature.value) {
+      return (
+        <React.Fragment>
+          <div className="centered">
+            Temp: <b>{this.state.temperature.value}</b> {"\xB0"}C
         </div>
 
-        <div className="centered">
-          <small>{this.timeAgo.format(this.state.temperature[0].time)}</small>
+          <div className="centered">
+            <small>{this.timeAgo.format(this.state.temperature.time)}</small>
+          </div>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <div className="centered" >
+          Waiting for the data from the server...
         </div>
-      </React.Fragment>
-    );
-  }
-
-  async componentDidMount() {
-    let response = await fetch(`${constants.BASE_URL}/temperature`);
-    let temperature = await response.json();
-
-    this.setState({ temperature });
+      );
+    }
   }
 }
 
