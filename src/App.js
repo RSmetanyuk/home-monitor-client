@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
-
-import "./App.css";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+
+import "./App.css";
 import * as constants from "./constants";
+import TemperatureChart from "./components/TemperatureChart"
 
 class App extends Component {
   state = {
@@ -28,11 +29,15 @@ class App extends Component {
       return (
         <React.Fragment>
           <div className="centered">
-            Temp: <b>{this.state.temperature.value}</b> {"\xB0"}C
-        </div>
+            Current temperature: <b>{this.state.temperature.value}</b> {"\xB0"}C
+          </div>
 
           <div className="centered">
             <small>{this.timeAgo.format(this.state.temperature.time)}</small>
+          </div>
+
+          <div className="centered chart">
+            <TemperatureChart temperature={this.state.temperature} />
           </div>
         </React.Fragment>
       );
